@@ -1,0 +1,57 @@
+
+{   
+    "ST001" : 
+    {
+        "name" : "Neha Singhal",
+        "City" : "Rohtak",
+        "Batch" : "Software Development 2024",
+        "problems_solved" : 67,
+        "total_problems" : 100,
+        "passout_year" : 2019
+    },
+    "ST002" : 
+    {
+        "name" : "Tamanna Verma",
+        "City" : "Gurugram",
+        "Batch" : "AI 2025",
+        "problems_solved" : 76,
+        "total_problems" : 100,
+        "passout_year" : 2020
+    },
+    "ST003" : 
+    {
+        "name" : "IRAM Fatima",
+        "City" : "Mumbai",
+        "Batch" : "AI 2024",
+        "problems_solved" : 80,
+        "total_problems" : 100,
+        "passout_year" : 2021
+    },
+    "ST004" : 
+    {
+        "name" : "Karan Kumar",
+        "City" : "Hyderabad",
+        "Batch" : "AIML 2023",
+        "problems_solved" : 58,
+        "total_problems" : 100,
+        "passout_year" : 2018
+    },
+    "ST005" : 
+    {
+        "name" : "Sushant Singh",
+        "City" : "Pune",
+        "Batch" : "AIML 2025",
+        "problems_solved" : 97,
+        "total_problems" : 100,
+        "passout_year" : 2022
+    },
+    "ST006" : 
+    {
+        "name" : "Aditya Verma",
+        "City" : "Noida",
+        "Batch" : "AIML 2023",
+        "problems_solved" : 86,
+        "total_problems" : 100,
+        "passout_year" : 2025
+    }
+}
