@@ -1,4 +1,3 @@
-
 {   
     "ST001" : 
     {
@@ -6,7 +5,6 @@
         "City" : "Rohtak",
         "Batch" : "Software Development 2024",
         "problems_solved" : 67,
-        "total_problems" : 100,
         "passout_year" : 2019
     },
     "ST002" : 
@@ -15,7 +13,6 @@
         "City" : "Gurugram",
         "Batch" : "AI 2025",
         "problems_solved" : 76,
-        "total_problems" : 100,
         "passout_year" : 2020
     },
     "ST003" : 
@@ -24,7 +21,6 @@
         "City" : "Mumbai",
         "Batch" : "AI 2024",
         "problems_solved" : 80,
-        "total_problems" : 100,
         "passout_year" : 2021
     },
     "ST004" : 
@@ -33,7 +29,6 @@
         "City" : "Hyderabad",
         "Batch" : "AIML 2023",
         "problems_solved" : 58,
-        "total_problems" : 100,
         "passout_year" : 2018
     },
     "ST005" : 
@@ -42,7 +37,6 @@
         "City" : "Pune",
         "Batch" : "AIML 2025",
         "problems_solved" : 97,
-        "total_problems" : 100,
         "passout_year" : 2022
     },
     "ST006" : 
@@ -51,7 +45,6 @@
         "City" : "Noida",
         "Batch" : "AIML 2023",
         "problems_solved" : 86,
-        "total_problems" : 100,
         "passout_year" : 2025
     }
 }
