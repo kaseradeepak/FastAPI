@@ -8,9 +8,34 @@
 # pip3 install fastapi pydantic uvicorn
 
 from fastapi import FastAPI, HTTPException, Path, Query
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field, computed_field
+from typing import Annotated
 import json
 
 app = FastAPI()
+
+#ge = greater than equal
+#gt = greater than
+#le
+#lt
+
+class Student(BaseModel):
+    id: Annotated[str, Field(..., description="student id", examples=["ST001"])]
+    name: Annotated[str, Field(..., description="student name")]
+    city: Annotated[str, Field(..., description="student city")]
+    batch: Annotated[str, Field(..., description="student batch")]
+    age: Annotated[int, Field(..., ge=18, lt=100, description="student age")] # age >= 18 & < 100
+    problems_solved: Annotated[int, Field(..., description="no. of problems solved by student.")]
+    passout_year: Annotated[int, Field(..., description="passout year for student.")]
+
+    @computed_field
+    @property
+    def problem_solving_percentage(self) -> float:
+        problem_solving_percentage = round((self.problems_solved / 150) * 100, 2)
+        
+        return problem_solving_percentage
+        
 
 # Home Page
 @app.get("/") 
@@ -27,6 +52,11 @@ def load_data():
         data = json.load(f)
 
     return data
+
+def save_data(data):
+    with open('students.json', 'w') as f:
+        json.dump(data, f)
+
 
 # Create all the APIs to perform CRUD operations on Students JSON file.
 
@@ -84,6 +114,45 @@ def sort_students(sort_by : str = Query(..., description="Sort on the basis of p
     return sorted_students_data
 
 # Create API - POST
+# User should provide the student details in the request body
+@app.post("/create")
+def create_student(input_student_data : Student):
+    # validate all the student attributes coming in the request body.
+
+    students_data = load_data() # Dictionary
+
+    if input_student_data.id in students_data:
+        raise HTTPException(status_code=400, detail="Student with id already exists.")
+    
+    # Create a new student and save it in the file.
+    # model_dump -> Converts Pydantic model or object into dictionary.
+    input_student_dict = input_student_data.model_dump(exclude="id")
+
+    students_data[input_student_data.id] = input_student_dict
+
+    save_data(students_data)
+
+    return JSONResponse(status_code=200, content='Student created successfully.')
+
+@app.delete("/delete/{student_id}")
+def delete_student(student_id : str):
+    student_data = load_data()
+
+    if student_id not in student_data:
+        raise HTTPException(status_code=404, detail="Student not found.")
+    
+    del student_data[student_id]
+
+    save_data(student_data)
+
+    return JSONResponse(status_code=200, content='Student deleted successfully.')
+
+
+
+# {
+#     "id" : "ST001",
+
+# }
 
 # Update API - PUT / PATCH
 
@@ -101,3 +170,14 @@ def sort_students(sort_by : str = Query(..., description="Sort on the basis of p
 # from operator import itemgetter
 
 # sorted(students_data.values(), key=itemgetter(sort_by), reverse=True)
+
+# "ST001" : 
+
+# {
+#   "name": "Deepak",
+#   "city": "Gurgaon",
+#   "batch": "XYZ",
+#   "age": 30,
+#   "problems_solved": "thirty one",
+#   "passout_year": 2018
+# }
