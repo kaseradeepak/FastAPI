@@ -10,7 +10,7 @@
 from fastapi import FastAPI, HTTPException, Path, Query
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, computed_field
-from typing import Annotated
+from typing import Annotated, Optional
 import json
 
 app = FastAPI()
@@ -29,13 +29,21 @@ class Student(BaseModel):
     problems_solved: Annotated[int, Field(..., description="no. of problems solved by student.")]
     passout_year: Annotated[int, Field(..., description="passout year for student.")]
 
+    # compute field logic gets executed automatically when a Student object gets created.
     @computed_field
     @property
     def problem_solving_percentage(self) -> float:
         problem_solving_percentage = round((self.problems_solved / 150) * 100, 2)
         
         return problem_solving_percentage
-        
+    
+class UpdateStudent(BaseModel):
+    name: Annotated[Optional[str], Field(default=None)]
+    city: Annotated[Optional[str], Field(default=None)]
+    batch: Annotated[Optional[str], Field(default=None)]
+    age: Annotated[Optional[int], Field(default=None, ge=18, lt=100, description="student age")]
+    problems_solved: Annotated[Optional[int], Field(default=None)]
+    passout_year: Annotated[Optional[int], Field(default=None)]
 
 # Home Page
 @app.get("/") 
@@ -56,7 +64,6 @@ def load_data():
 def save_data(data):
     with open('students.json', 'w') as f:
         json.dump(data, f)
-
 
 # Create all the APIs to perform CRUD operations on Students JSON file.
 
@@ -134,6 +141,66 @@ def create_student(input_student_data : Student):
 
     return JSONResponse(status_code=200, content='Student created successfully.')
 
+
+# Update Student API
+# Put -> Replace  or Patch -> Partial
+# This update api will take care of both partial and complete replace student api
+# In this api, we will update the parameters whichever is coming in the request body.
+# It'll 2 input parameters - 
+#   1. student_id -> path param
+#   2. update_student_details -> request body
+@app.put("/update/{student_id}")
+def update_student(student_id: str, update_student_object: UpdateStudent):
+    students_data = load_data()
+
+    if student_id not in students_data:
+        raise HTTPException(status_code=404, detail="Student not found.")
+    
+    existing_student = students_data[student_id]
+
+    # convert the input object into dictionary
+    updated_student_info = update_student_object.model_dump(exclude_unset=True)
+
+    for key, value in updated_student_info.items():
+        existing_student[key] = value
+
+    # {
+    #     "id" : "ST006",
+    #     "name": "Aditya Verma", 
+    #     "city": "NY", 
+    #     "Batch": 
+    #     "AIML 2023", 
+    #     "age": "24", 
+    #     "problems_solved": 86, 
+    #     "passout_year": 2040, 
+    #     "problem_solving_percentage": 57.33
+    # }
+
+    # existing_student_object -> Student pydantic model => this will compute the problem solving percentage again.
+    existing_student["id"] = student_id
+    existing_student_object = Student(**existing_student)
+
+    # convert existing_student_object back to dictionary
+    new_students_data = existing_student_object.model_dump(exclude=["id"])
+
+    print(new_students_data)
+
+    students_data[student_id] = new_students_data
+
+    save_data(students_data) # writing the data to the file.
+
+    return JSONResponse(status_code=200, content='Student updated successfully.')
+
+# Update API
+# /update/{student_id}
+# student_id = "ST004"
+
+# {
+#     "City": "Mumbai",
+#     "passout_year": 2008
+# }
+
+
 @app.delete("/delete/{student_id}")
 def delete_student(student_id : str):
     student_data = load_data()
@@ -181,3 +248,6 @@ def delete_student(student_id : str):
 #   "problems_solved": "thirty one",
 #   "passout_year": 2018
 # }
+
+# DRY -> Don't Repeat Yourself => Reusability 
+# KISS -> Keep it Simple and Stupid.
