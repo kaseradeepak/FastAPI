@@ -7,10 +7,11 @@
 
 # pip3 install fastapi pydantic uvicorn
 
-from fastapi import FastAPI, HTTPException, Path, Query
+from fastapi import FastAPI, HTTPException, Path, Query, Depends
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, computed_field
 from typing import Annotated, Optional
+from auth import authenticate_user
 import json
 
 app = FastAPI()
@@ -70,8 +71,11 @@ def save_data(data):
 # Read API - get
 
 # get the details of all the students.
+# make this endpoint authenticated (this endpoint needs username, password to get called.)
+# should we call authenticate_user manually ? NO
+# We'll use dependency injection. 
 @app.get("/students")
-def get_students():
+def get_students(current_username = Depends(authenticate_user)):
     data = load_data()
     return data
 
