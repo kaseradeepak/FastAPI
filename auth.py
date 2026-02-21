@@ -56,7 +56,7 @@ def authenticate_user(user_details: HTTPBasicCredentials = Depends(security_app)
     # username found in db, compare the password now.
     if verify_password(user_details.password, user["password"]):
         #Login successful
-        # Instead of returning username here, we should return the Token.
+        # Instead of returning username here, we should return the Token via JWT Library
         return username
     
     raise HTTPException(
