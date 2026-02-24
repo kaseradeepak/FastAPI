@@ -1,0 +1,7 @@
+ecdsa==0.19.1
+pyasn1==0.6.2
+python-jose==3.5.0
+rsa==4.9.1
+six==1.17.0
+SQLAlchemy==2.0.46
+typing_extensions==4.15.0

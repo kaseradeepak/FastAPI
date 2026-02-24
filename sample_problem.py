@@ -1,12 +1,16 @@
 from enum import Enum
 from pydantic import BaseModel
 from fastapi import FastAPI, Depends, HTTPException
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import datetime, timedelta
 # pip3 install python-jose
 from jose import jwt
 
+# OAuth2PasswordRequestForm -> Used to get the username, password in the input param.
+# OAuth2PasswordBearer -> Get the token from the input HTTP request.
+
 app = FastAPI()
+ouath2_scheme = OAuth2PasswordBearer(tokenUrl = "token")
 
 ALGORITHM = "HS256"
 SECRET_KEY = "our_secret_key"
@@ -65,3 +69,20 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
     )
 
     return access_token
+
+def get_user_details_from_token(token: str = Depends(ouath2_scheme)):
+    # decode the token and get the payload out of it.
+    try:
+        # If the token decoding fails, then it throw an exception.
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get("username")
+        role = payload.get("role")
+        expiry_time = payload.get("expiry")
+
+        if expiry_time < datetime.utcnow():
+            raise HTTPException(status_code401, detail = "Token expired.")
+
+        return {"username" : username, "role" : role}
+    except:
+        raise HTTPException(status_code = 401, detail = "Invalid Token.")
+
