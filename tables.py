@@ -11,7 +11,8 @@ users = Table(
     Column("id", Integer, primary_key=True),
     Column("name", String(50), nullable=False),
     Column("email", String(50), nullable=False, unique=True),
-    Column("address", String(100), nullable=False)
+    Column("address", String(100), nullable=False),
+    Column("phone_number", Integer, nullable=False)
 )
 
 posts = Table(

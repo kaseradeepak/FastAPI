@@ -1,6 +1,6 @@
 from db import engine
 from tables import users, posts
-from sqlalchemy import insert, select, update, delete
+from sqlalchemy import insert, select, update, delete, func
 
 # Create
 def create_users(input_name: str, input_email: str, input_address: str):
@@ -62,3 +62,10 @@ def get_posts_with_author_name():
         result = conn.execute(query).fetchall()
         return result
 
+# get the count of posts for each user.
+def get_post_count_per_user():
+    with engine.connect() as conn:
+        # select user_id, count(id) from posts group by id;
+        query = select(posts.c.user_id, func.count(posts.c.id)).group_by(posts.c.user_id)
+        result = conn.execute(query).fetchall()
+        return result
