@@ -6,3 +6,6 @@ DATABASE_URL = "sqlite:///./sqlite.db"
 
 orm_engine = create_engine(DATABASE_URL, echo=True)
 orm_session = sessionmaker(bind=orm_engine)
+
+# ORM -> Object Relation Mapping.
+# User Model -> User table
