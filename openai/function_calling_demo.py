@@ -34,6 +34,21 @@ tools = [
             },
             "required": ["city"]
         }
+    },
+    {
+        "type": "function",
+        "name": "get_loan_details",
+        "description": "Get the loan details.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "loan_type": {
+                    "type": "string",
+                    "description": "type of loan"
+                }
+            },
+            "required": ["loan_type"]
+        }
     }
 ]
 
@@ -45,11 +60,14 @@ response = client.responses.create(
 
 print(response)
 
-# for item in response.output:
-#     if item.type == "function_call":
-#         print("Tool name: ", item.name)
-#         print("Arguments: ", item.arguments)
+for item in response.output:
+    if item.type == "function_call":
+        function_name = item.name
+        print(function_name)
+        args = json.loads(item.arguments)
+        print(args)
 
-#         args = json.loads(item.arguments)
-
-#         print(args)
+        if function_name == 'get_weather':
+            data = get_weather(args.get('city'))
+            print(f"Weather for city: {args.get('city')} is {data}")
+    
